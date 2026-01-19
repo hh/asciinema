@@ -308,6 +308,10 @@ pub struct Record {
     #[arg(long, value_name = "PATH", help = "Log file path", long_help)]
     pub log_file: Option<PathBuf>,
 
+    /// Comma-separated list of tags to associate with the recording. Tags help categorize and organize recordings for easier searching and filtering. For example: --tags "tutorial,python,async" or --tags "demo,kubernetes".
+    #[arg(long, value_name = "TAGS", help = "Comma-separated tags for the recording", long_help)]
+    pub tags: Option<String>,
+
     #[arg(long, hide = true)]
     pub cols: Option<u16>,
 
@@ -421,6 +425,10 @@ pub struct Stream {
     /// Specify a custom asciinema server URL for streaming to self-hosted servers. Use the base server URL (e.g., https://asciinema.example.com). Can also be set via the environment variable ASCIINEMA_SERVER_URL or the config file option server.url. If no server URL is configured via this option, environment variable, or config file, you will be prompted to choose one (defaulting to asciinema.org), which will be saved as a default.
     #[arg(long, value_name = "URL", help = "asciinema server URL", long_help)]
     pub server_url: Option<String>,
+
+    /// Comma-separated list of tags to associate with the stream. Tags help categorize and organize streams for easier searching and filtering. For example: --tags "tutorial,python,async" or --tags "live,kubernetes".
+    #[arg(long, value_name = "TAGS", help = "Comma-separated tags for the stream", long_help)]
+    pub tags: Option<String>,
 }
 
 #[derive(Debug, Args)]
@@ -527,6 +535,10 @@ pub struct Session {
     /// Specify a custom asciinema server URL for streaming to self-hosted servers. Use the base server URL (e.g., https://asciinema.example.com). Can also be set via environment variable ASCIINEMA_SERVER_URL or config file option server.url. If no server URL is configured via this option, environment variable, or config file, you will be prompted to choose one (defaulting to asciinema.org), which will be saved as a default.
     #[arg(long, value_name = "URL", help = "asciinema server URL", long_help)]
     pub server_url: Option<String>,
+
+    /// Comma-separated list of tags to associate with the session.
+    #[arg(long, value_name = "TAGS", help = "Comma-separated tags for the session")]
+    pub tags: Option<String>,
 
     #[arg(hide = true)]
     pub env: Vec<String>,

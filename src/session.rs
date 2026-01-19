@@ -38,6 +38,7 @@ pub struct Metadata {
     pub command: Option<String>,
     pub title: Option<String>,
     pub env: HashMap<String, String>,
+    pub tags: Option<Vec<String>>,
 }
 
 #[derive(Clone)]

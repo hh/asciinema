@@ -19,6 +19,7 @@ struct V3Header {
     command: Option<String>,
     title: Option<String>,
     env: Option<HashMap<String, String>>,
+    tags: Option<Vec<String>>,
 }
 
 #[derive(Deserialize)]
@@ -102,6 +103,7 @@ impl Parser {
             command: self.header.command.clone(),
             title: self.header.title.clone(),
             env: self.header.env.clone(),
+            tags: self.header.tags.clone(),
         };
 
         let events = Box::new(lines.filter_map(move |line| self.parse_line(line)));
@@ -278,6 +280,10 @@ impl serde::Serialize for V3Header {
             len += 1;
         }
 
+        if self.tags.as_ref().is_some_and(|tags| !tags.is_empty()) {
+            len += 1;
+        }
+
         let mut map = serializer.serialize_map(Some(len))?;
         map.serialize_entry("version", &3)?;
         map.serialize_entry("term", &self.term)?;
@@ -301,6 +307,12 @@ impl serde::Serialize for V3Header {
         if let Some(env) = &self.env {
             if !env.is_empty() {
                 map.serialize_entry("env", &env)?;
+            }
+        }
+
+        if let Some(tags) = &self.tags {
+            if !tags.is_empty() {
+                map.serialize_entry("tags", &tags)?;
             }
         }
         map.end()
@@ -432,6 +444,7 @@ impl From<&Header> for V3Header {
             command: header.command.clone(),
             title: header.title.clone(),
             env: header.env.clone(),
+            tags: header.tags.clone(),
         }
     }
 }

@@ -165,6 +165,13 @@ impl cli::Session {
     }
 
     async fn get_session_metadata(&self, config: &config::Session) -> Result<Metadata> {
+        let tags = self.tags.as_ref().map(|s| {
+            s.split(',')
+                .map(|t| t.trim().to_owned())
+                .filter(|t| !t.is_empty())
+                .collect()
+        });
+
         Ok(Metadata {
             time: SystemTime::now(),
             term: self.get_term_info().await?,
@@ -172,6 +179,7 @@ impl cli::Session {
             command: self.get_command(config),
             title: self.title.clone(),
             env: capture_env(self.capture_env.clone(), config),
+            tags,
         })
     }
 
@@ -356,6 +364,7 @@ impl cli::Session {
             term_version: Some(metadata.term.version.clone()),
             shell: Some(env::var("SHELL").ok()),
             env,
+            tags: metadata.tags.clone().map(Some),
         };
 
         if id.is_empty() {

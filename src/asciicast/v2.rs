@@ -97,6 +97,7 @@ impl Parser {
             command: self.0.command.clone(),
             title: self.0.title.clone(),
             env,
+            tags: None,
         };
 
         let events = Box::new(lines.filter_map(parse_line));
