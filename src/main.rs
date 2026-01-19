@@ -58,6 +58,9 @@ fn main() -> ExitCode {
                 return_: cmd.return_,
                 log_file: cmd.log_file,
                 server_url: None,
+                audio_url: None,
+                description: None,
+                visibility: None,
                 env: vec!["ASCIINEMA_REC=1".to_owned()],
             };
 
@@ -82,6 +85,9 @@ fn main() -> ExitCode {
                 return_: cmd.return_,
                 log_file: cmd.log_file,
                 server_url: cmd.server_url,
+                audio_url: cmd.audio_url,
+                description: cmd.description,
+                visibility: cmd.visibility,
                 env: Vec::new(),
             };
 

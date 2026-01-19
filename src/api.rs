@@ -24,6 +24,15 @@ pub struct StreamResponse {
     pub url: String,
 }
 
+/// Visibility level for streams and recordings
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Visibility {
+    Public,
+    Unlisted,
+    Private,
+}
+
 #[derive(Default, Serialize)]
 pub struct StreamChangeset {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,6 +47,12 @@ pub struct StreamChangeset {
     pub shell: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub env: Option<Option<HashMap<String, String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub audio_url: Option<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visibility: Option<Visibility>,
 }
 
 #[derive(Debug, Deserialize)]

@@ -421,6 +421,26 @@ pub struct Stream {
     /// Specify a custom asciinema server URL for streaming to self-hosted servers. Use the base server URL (e.g., https://asciinema.example.com). Can also be set via the environment variable ASCIINEMA_SERVER_URL or the config file option server.url. If no server URL is configured via this option, environment variable, or config file, you will be prompted to choose one (defaulting to asciinema.org), which will be saved as a default.
     #[arg(long, value_name = "URL", help = "asciinema server URL", long_help)]
     pub server_url: Option<String>,
+
+    /// URL of a live audio stream (e.g., Icecast MP3/OGG) to synchronize with the terminal stream. When set, viewers can listen to audio commentary while watching the terminal. The audio URL is stored in the stream metadata and used by the player for synchronized playback. For example: --audio-url "https://icecast.example.com/live.mp3"
+    #[arg(long, value_name = "URL", help = "Audio stream URL for synchronized playback", long_help)]
+    pub audio_url: Option<String>,
+
+    /// Markdown description of the streaming session. This description is displayed on the stream page and can include formatting, links, and code blocks. Useful for providing context, instructions, or documentation for viewers.
+    #[arg(long, help = "Description of the session (Markdown supported)", long_help)]
+    pub description: Option<String>,
+
+    /// Set the visibility level for the stream. Public streams appear in listings and search results. Unlisted streams are accessible via direct URL but don't appear in listings. Private streams are only accessible to the owner.
+    #[arg(long, value_enum, help = "Visibility level: public, unlisted, or private", long_help)]
+    pub visibility: Option<StreamVisibility>,
+}
+
+/// Visibility level for streams
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum StreamVisibility {
+    Public,
+    Unlisted,
+    Private,
 }
 
 #[derive(Debug, Args)]
@@ -527,6 +547,18 @@ pub struct Session {
     /// Specify a custom asciinema server URL for streaming to self-hosted servers. Use the base server URL (e.g., https://asciinema.example.com). Can also be set via environment variable ASCIINEMA_SERVER_URL or config file option server.url. If no server URL is configured via this option, environment variable, or config file, you will be prompted to choose one (defaulting to asciinema.org), which will be saved as a default.
     #[arg(long, value_name = "URL", help = "asciinema server URL", long_help)]
     pub server_url: Option<String>,
+
+    /// URL of a live audio stream to synchronize with the terminal stream.
+    #[arg(long, value_name = "URL", help = "Audio stream URL for synchronized playback")]
+    pub audio_url: Option<String>,
+
+    /// Markdown description of the session.
+    #[arg(long, help = "Description of the session (Markdown supported)")]
+    pub description: Option<String>,
+
+    /// Visibility level for the stream.
+    #[arg(long, value_enum, help = "Visibility level: public, unlisted, or private")]
+    pub visibility: Option<StreamVisibility>,
 
     #[arg(hide = true)]
     pub env: Vec<String>,

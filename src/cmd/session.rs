@@ -14,9 +14,9 @@ use tracing::level_filters::LevelFilter;
 use tracing_subscriber::EnvFilter;
 use url::Url;
 
-use crate::api::{self, StreamChangeset, StreamResponse};
+use crate::api::{self, StreamChangeset, StreamResponse, Visibility};
 use crate::asciicast::{self, Version};
-use crate::cli::{self, Format, RelayTarget};
+use crate::cli::{self, Format, RelayTarget, StreamVisibility};
 use crate::config::{self, Config};
 use crate::encoder::{AsciicastV2Encoder, AsciicastV3Encoder, Encoder, RawEncoder, TextEncoder};
 use crate::file_writer::FileWriter;
@@ -349,6 +349,13 @@ impl cli::Session {
             Some(Some(metadata.env.clone()))
         };
 
+        // Convert CLI visibility to API visibility
+        let visibility = self.visibility.map(|v| match v {
+            StreamVisibility::Public => Visibility::Public,
+            StreamVisibility::Unlisted => Visibility::Unlisted,
+            StreamVisibility::Private => Visibility::Private,
+        });
+
         let changeset = StreamChangeset {
             live: Some(true),
             title: metadata.title.clone().map(Some),
@@ -356,6 +363,9 @@ impl cli::Session {
             term_version: Some(metadata.term.version.clone()),
             shell: Some(env::var("SHELL").ok()),
             env,
+            audio_url: self.audio_url.clone().map(Some),
+            description: self.description.clone().map(Some),
+            visibility,
         };
 
         if id.is_empty() {
