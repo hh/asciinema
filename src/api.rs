@@ -38,6 +38,8 @@ pub struct StreamChangeset {
     pub shell: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub env: Option<Option<HashMap<String, String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tags: Option<Option<Vec<String>>>,
 }
 
 #[derive(Debug, Deserialize)]

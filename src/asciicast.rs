@@ -40,6 +40,7 @@ pub struct Header {
     pub command: Option<String>,
     pub title: Option<String>,
     pub env: Option<HashMap<String, String>>,
+    pub tags: Option<Vec<String>>,
 }
 
 pub struct Event {
@@ -93,6 +94,7 @@ impl Default for Header {
             command: None,
             title: None,
             env: None,
+            tags: None,
         }
     }
 }

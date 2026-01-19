@@ -55,6 +55,7 @@ impl FileWriter {
             command: self.metadata.command.as_ref().cloned(),
             title: self.metadata.title.as_ref().cloned(),
             env: Some(self.metadata.env.clone()),
+            tags: self.metadata.tags.clone(),
         };
 
         if let Err(e) = self.writer.write_all(&self.encoder.header(&header)).await {
