@@ -57,6 +57,7 @@ impl cli::Session {
         let listener = self.get_listener().await?;
         let relay = self.get_relay(&metadata, &mut config).await?;
         let relay_id = relay.as_ref().map(|r| r.id());
+        let relay_stream_id = relay.as_ref().and_then(|r| r.stream_id);
         let parent_session_relay_id = get_parent_session_relay_id();
 
         if relay_id.is_some()
@@ -83,11 +84,8 @@ impl cli::Session {
             );
         }
 
-        if let Some(Relay { url: Some(url), cast_url, .. }) = &relay {
+        if let Some(Relay { url: Some(url), .. }) = &relay {
             status::info!("Live streaming at {}", url);
-            if let Some(cast_url) = cast_url {
-                status::info!("Recording will be at {}", cast_url);
-            }
         }
 
         if command.is_none() {
@@ -123,6 +121,18 @@ impl cli::Session {
         if server.is_some() || forwarder.is_some() {
             let output = stream.start(&metadata).await;
             outputs.push(Box::new(output));
+        }
+
+        // Query stream again after connection to get cast_url (allocated on connect)
+        if let Some(stream_id) = relay_stream_id {
+            // Brief delay to allow server to allocate cast_token on lead
+            time::sleep(Duration::from_millis(100)).await;
+
+            if let Ok(stream_info) = api::get_stream(stream_id, &mut config).await {
+                if let Some(cast_url) = stream_info.cast_url {
+                    status::info!("Recording will be at {}", cast_url);
+                }
+            }
         }
 
         let command = &build_exec_command(command.as_ref().cloned());
@@ -324,6 +334,7 @@ impl cli::Session {
                 let stream = self.start_stream(id, metadata, config).await?;
 
                 Relay {
+                    stream_id: Some(stream.id),
                     ws_producer_url: stream.ws_producer_url.parse()?,
                     url: Some(stream.url.parse()?),
                     cast_url: stream.cast_url.map(|u| u.parse()).transpose()?,
@@ -331,6 +342,7 @@ impl cli::Session {
             }
 
             RelayTarget::WsProducerUrl(url) => Relay {
+                stream_id: None,
                 ws_producer_url: url.clone(),
                 url: None,
                 cast_url: None,
@@ -509,6 +521,7 @@ impl TtySelection {
 
 #[derive(Debug)]
 struct Relay {
+    stream_id: Option<u64>,
     ws_producer_url: Url,
     url: Option<Url>,
     cast_url: Option<Url>,

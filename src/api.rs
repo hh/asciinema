@@ -145,6 +145,26 @@ fn create_stream_request(
     builder.json(&changeset)
 }
 
+pub async fn get_stream(stream_id: u64, config: &mut Config) -> Result<StreamResponse> {
+    let server_url = config.get_server_url()?;
+    let install_id = config.get_install_id()?;
+
+    let response = get_stream_request(&server_url, &install_id, stream_id)
+        .send()
+        .await
+        .context("cannot fetch stream info - is the server down?")?;
+
+    parse_stream_response(response, &server_url).await
+}
+
+fn get_stream_request(server_url: &Url, install_id: &str, stream_id: u64) -> RequestBuilder {
+    let client = Client::new();
+    let mut url = server_url.clone();
+    url.set_path(&format!("api/v1/streams/{stream_id}"));
+
+    add_headers(client.get(url), install_id)
+}
+
 pub async fn update_stream(
     stream_id: u64,
     changeset: StreamChangeset,
