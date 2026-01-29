@@ -83,8 +83,11 @@ impl cli::Session {
             );
         }
 
-        if let Some(Relay { url: Some(url), .. }) = &relay {
+        if let Some(Relay { url: Some(url), cast_url, .. }) = &relay {
             status::info!("Live streaming at {}", url);
+            if let Some(cast_url) = cast_url {
+                status::info!("Recording will be at {}", cast_url);
+            }
         }
 
         if command.is_none() {
@@ -323,12 +326,14 @@ impl cli::Session {
                 Relay {
                     ws_producer_url: stream.ws_producer_url.parse()?,
                     url: Some(stream.url.parse()?),
+                    cast_url: stream.cast_url.map(|u| u.parse()).transpose()?,
                 }
             }
 
             RelayTarget::WsProducerUrl(url) => Relay {
                 ws_producer_url: url.clone(),
                 url: None,
+                cast_url: None,
             },
         };
 
@@ -506,6 +511,7 @@ impl TtySelection {
 struct Relay {
     ws_producer_url: Url,
     url: Option<Url>,
+    cast_url: Option<Url>,
 }
 
 impl Relay {

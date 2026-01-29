@@ -22,6 +22,7 @@ pub struct StreamResponse {
     pub id: u64,
     pub ws_producer_url: String,
     pub url: String,
+    pub cast_url: Option<String>,
 }
 
 #[derive(Default, Serialize)]
