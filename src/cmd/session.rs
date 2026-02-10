@@ -192,6 +192,7 @@ impl cli::Session {
             idle_time_limit: self.idle_time_limit.or(config.idle_time_limit),
             command: self.get_command(config),
             title: self.title.clone(),
+            description: self.description.clone(),
             env: capture_env(self.capture_env.clone(), config),
             tags,
         })
@@ -367,6 +368,7 @@ impl cli::Session {
         let changeset = StreamChangeset {
             live: Some(true),
             title: metadata.title.clone().map(Some),
+            description: metadata.description.clone().map(Some),
             term_type: Some(metadata.term.type_.clone()),
             term_version: Some(metadata.term.version.clone()),
             shell: Some(env::var("SHELL").ok()),

@@ -37,6 +37,7 @@ pub struct Metadata {
     pub idle_time_limit: Option<f64>,
     pub command: Option<String>,
     pub title: Option<String>,
+    pub description: Option<String>,
     pub env: HashMap<String, String>,
     pub tags: Option<Vec<String>>,
 }

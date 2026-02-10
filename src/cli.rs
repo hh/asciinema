@@ -308,6 +308,10 @@ pub struct Record {
     #[arg(long, value_name = "PATH", help = "Log file path", long_help)]
     pub log_file: Option<PathBuf>,
 
+    /// Set a description for the recording. Supports Markdown formatting. The description is stored as metadata and displayed on the recording page. For example: --description "Demo of the new API endpoints".
+    #[arg(long, help = "Description of the recording (Markdown)", long_help)]
+    pub description: Option<String>,
+
     /// Comma-separated list of tags to associate with the recording. Tags help categorize and organize recordings for easier searching and filtering. For example: --tags "tutorial,python,async" or --tags "demo,kubernetes".
     #[arg(long, value_name = "TAGS", help = "Comma-separated tags for the recording", long_help)]
     pub tags: Option<String>,
@@ -426,6 +430,10 @@ pub struct Stream {
     #[arg(long, value_name = "URL", help = "asciinema server URL", long_help)]
     pub server_url: Option<String>,
 
+    /// Set a description for the stream. Supports Markdown formatting. The description is displayed on the stream page and inherited by recordings created from the stream. For example: --description "Live coding session: building a REST API".
+    #[arg(long, help = "Description of the stream (Markdown)", long_help)]
+    pub description: Option<String>,
+
     /// Comma-separated list of tags to associate with the stream. Tags help categorize and organize streams for easier searching and filtering. For example: --tags "tutorial,python,async" or --tags "live,kubernetes".
     #[arg(long, value_name = "TAGS", help = "Comma-separated tags for the stream", long_help)]
     pub tags: Option<String>,
@@ -535,6 +543,10 @@ pub struct Session {
     /// Specify a custom asciinema server URL for streaming to self-hosted servers. Use the base server URL (e.g., https://asciinema.example.com). Can also be set via environment variable ASCIINEMA_SERVER_URL or config file option server.url. If no server URL is configured via this option, environment variable, or config file, you will be prompted to choose one (defaulting to asciinema.org), which will be saved as a default.
     #[arg(long, value_name = "URL", help = "asciinema server URL", long_help)]
     pub server_url: Option<String>,
+
+    /// Set a description for the session. Supports Markdown formatting. The description is stored as metadata and displayed on both the stream page and any recordings created from the stream.
+    #[arg(long, help = "Description of the session (Markdown)", long_help)]
+    pub description: Option<String>,
 
     /// Comma-separated list of tags to associate with the session.
     #[arg(long, value_name = "TAGS", help = "Comma-separated tags for the session")]
